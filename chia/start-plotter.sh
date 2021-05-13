@@ -15,6 +15,7 @@ plots_tmp_dir="${HOME}/plots-tmp/${suffix}"
 mkdir -p "${plots_tmp_dir}"
 
 # loop whenever done plotting, unless we were told to stop
+. "${HOME}/chia-blockchain/activate"
 touch "${plots_tmp_dir}.loop"
 while [ -f "${plots_tmp_dir}.loop" ]; do
   bash -c 'chia plots create -r 4 -f '"${chia_farmer_public_key}"' -p '"${chia_pool_public_key}"' -t '"${plots_tmp_dir}"' -d '"${HOME}/gv-chia/plots"' -e' &
