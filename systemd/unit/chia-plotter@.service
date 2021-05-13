@@ -1,0 +1,16 @@
+[Unit]
+Description="Chia Blockchain Plotter service %i"
+After=network.target
+
+[Service]
+Type=simple
+RestartSec=1s
+Restart=always
+User=ubuntu
+Group=ubuntu
+WorkingDirectory=/home/ubuntu/chia-scripts
+ExecStart=/home/ubuntu/chia-scripts/chia/start-plotter.sh %i systemd
+ExecStop=/home/ubuntu/chia-scripts/chia/stop-plotter.sh %i systemd
+
+[Install]
+WantedBy=multi-user.target
