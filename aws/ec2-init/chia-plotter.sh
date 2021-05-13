@@ -7,7 +7,7 @@ apt install -y git
 su ubuntu
 
 cd "${HOME}"
-if [ -z "${aws_region}" ]; then
+if [ -n "${aws_region}" ]; then
   echo "${aws_region}" | tee aws_region
 fi
 
