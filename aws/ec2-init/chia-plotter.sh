@@ -15,10 +15,12 @@ git clone 'https://github.com/dijedodol/chia-scripts.git' "${HOME}/chia-scripts"
 (sudo crontab -u "${USER}" -l ; echo '0 * * * * cd "${HOME}/chia-scripts"; git fetch origin master; git checkout master; git merge origin/master') | sudo crontab -u "${USER}" -
 cd "${HOME}/chia-scripts"
 
-sudo glusterfs/install.sh
-sudo glusterfs/client-setup.sh
+glusterfs/install.sh
+glusterfs/client-setup.sh
+mkdir -p "${HOME}/gv-chia/plots"
 
 # format & mount the local nvme ssd from i3 aws ec instance
+mkdir -p "${HOME}/plots-tmp"
 sudo mkfs -t ext4 /dev/nvme0n1
 sudo mount /dev/nvme0n1 "${HOME}/plots-tmp"
 sudo chown -R "${USER}:" "${HOME}/plots-tmp"
@@ -32,8 +34,6 @@ rm -f "${temp_file}"
 
 # chia install & setup systemd unit
 chia/install.sh
-mkdir -p "${HOME}/gv-chia/plots"
-mkdir -p "${HOME}/plots-tmp"
 
 sudo cp -f 'systemd/unit/chia-plotter@.service' /etc/systemd/system/
 sudo systemctl enable 'chia-plotter@1'

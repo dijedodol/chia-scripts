@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -v
 
-apt-get update
-apt-get upgrade -y
+sudo apt-get update
+sudo apt-get upgrade -y
 
 # Install Git
 sudo apt install git -y
