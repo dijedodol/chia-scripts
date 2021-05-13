@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+exec > >(tee /var/log/user-data.log|logger -t user-data -s 2>/dev/console) 2>&1
 set -v
 . constants.sh
 
@@ -26,7 +27,7 @@ sudo chown -R "${USER}:" "${HOME}/plots-tmp"
 temp_file=$(mktemp)
 grep -vqF "/dev/nvme0n1" /etc/fstab | tee "${temp_file}"
 echo "/dev/nvme0n1 ${HOME}/plots-tmp ext4 defaults,nofail 0" | tee -a "${temp_file}" > /dev/null
-tee /etc/fstab < "${temp_file}" > /dev/null
+sudo tee /etc/fstab < "${temp_file}" > /dev/null
 rm -f "${temp_file}"
 
 # chia install & setup systemd unit
