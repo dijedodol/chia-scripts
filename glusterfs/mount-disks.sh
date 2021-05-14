@@ -27,18 +27,15 @@ lsblk --json | jq -c '.blockdevices[] | select(.mountpoint == null and .type == 
   sudo mkdir -p "/gshare/${dev_name}"
 
   fs=$(sudo blkid "/dev/${dev_name}" -o value -s TYPE)
-  blkid_exit_code="$?"
-  if [ "$blkid_exit_code" -ne 0 ]; then
-    echo "ignoring block_device: ${dev_name}, blkid returned exit_code: ${blkid_exit_code}"
+  if [ "${fs}" = "${expected_fs}" ]; then
+    mount_and_update_fstab "${dev_name}" "/gshare/${dev_name}"
+    sudo mkdir -p "/gshare/${dev_name}/data"
+  elif [ -z "$fs" ]; then
+    echo "formatting block_device because there is no filesystem detected on block_device: ${dev_name}"
+    mkfs -t "${expected_fs}" "/dev/${dev_name}"
+    mount_and_update_fstab "${dev_name}" "/gshare/${dev_name}"
+    sudo mkdir -p "/gshare/${dev_name}/data"
   else
-    if [ "${fs}" = "${expected_fs}" ]; then
-      mount_and_update_fstab "${dev_name}" "/gshare/${dev_name}"
-    else
-      echo "formatting block_device: ${dev_name}, unexpected filesystem: ${fs}"
-      mkfs -t "${expected_fs}" "/dev/${dev_name}"
-      mount_and_update_fstab "${dev_name}" "/gshare/${dev_name}"
-    fi
+    echo "skipping block_device: ${dev_name}, unexpected existing filesystem: ${fs}"
   fi
-
-  sudo mkdir -p "/gshare/${dev_name}/data"
 done
