@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -ex
+set -x
 
 expected_fs='xfs'
 run_type='ec2-init'

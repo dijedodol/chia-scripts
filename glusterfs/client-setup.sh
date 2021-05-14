@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -ex
+set -x
 . constants.sh
 
 # mount gv-chia volume from glusterfs to user's home directory

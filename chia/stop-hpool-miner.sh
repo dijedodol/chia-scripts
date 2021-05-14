@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -ex
+set -x
 . constants.sh
 
 kill "$(cat "${HOME}/hpool/hpool.pid")"
