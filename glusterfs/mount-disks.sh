@@ -32,7 +32,7 @@ lsblk --json | jq -c '.blockdevices[] | select(.mountpoint == null and .type == 
     sudo mkdir -p "/gshare/${dev_name}/data"
   elif [ -z "$fs" ]; then
     echo "formatting block_device because there is no filesystem detected on block_device: ${dev_name}"
-    mkfs -t "${expected_fs}" "/dev/${dev_name}"
+    sudo mkfs -t "${expected_fs}" "/dev/${dev_name}"
     mount_and_update_fstab "${dev_name}" "/gshare/${dev_name}"
     sudo mkdir -p "/gshare/${dev_name}/data"
   else
