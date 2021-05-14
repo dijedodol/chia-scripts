@@ -33,8 +33,11 @@ sudo systemctl enable glusterd
 sudo systemctl start glusterd
 sudo systemctl status glusterd
 
+(sudo crontab -u "${USER}" -l ; echo '* * * * * cd "${HOME}/chia-scripts"; glusterfs/mount-disks.sh cron') | sudo crontab -u "${USER}" -
+
 sudo hostnamectl set-hostname glusterfs-master
 
+# TODO: GOTTA HANDLE WHEN VM WAS STARTING, BUT THERE IS NO DISK ATTACHED YET
 volume_created='false'
 for gshare_dir in /gshare/*; do
   if [ "${volume_created}" = 'true' ]; then
@@ -47,5 +50,3 @@ for gshare_dir in /gshare/*; do
     volume_created=true
   fi
 done
-
-(sudo crontab -u "${USER}" -l ; echo '* * * * * cd "${HOME}/chia-scripts"; glusterfs/mount-disks.sh cron') | sudo crontab -u "${USER}" -

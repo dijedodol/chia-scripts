@@ -33,10 +33,11 @@ sudo systemctl enable glusterd
 sudo systemctl start glusterd
 sudo systemctl status glusterd
 
-# instruct master to probe and add me as gv-chia bricks
-ssh "${glusterfs_master_host}" sudo gluster peer probe "$(hostname -I)"
-for gshare_dir in /gshare/*; do
-  ssh "${glusterfs_master_host}" sudo gluster volume add-brick gv-chia "$(hostname -I):${gshare_dir}/data" force
-done
-
 (sudo crontab -u "${USER}" -l ; echo '* * * * * cd "${HOME}/chia-scripts"; glusterfs/mount-disks.sh cron') | sudo crontab -u "${USER}" -
+
+# instruct master to probe and add me as gv-chia bricks
+# user xargs to remove extra whitespace produced by hostname -I
+ssh "${glusterfs_master_host}" sudo gluster peer probe "$(hostname -I | xargs echo -n)"
+for gshare_dir in /gshare/*; do
+  ssh "${glusterfs_master_host}" sudo gluster volume add-brick gv-chia "$(hostname -I | xargs echo -n):${gshare_dir}/data" force
+done
