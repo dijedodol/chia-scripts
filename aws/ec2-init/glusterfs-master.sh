@@ -17,7 +17,7 @@ cd "${HOME}/chia-scripts"
 . constants.sh
 
 glusterfs/install.sh
-glusterfs/mount-disk.sh
+glusterfs/mount-disks.sh
 
 sudo hostnamectl set-hostname glusterfs-master
 
