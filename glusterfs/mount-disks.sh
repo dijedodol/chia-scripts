@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -v
+set -ex
 
 expected_fs='xfs'
 
@@ -14,7 +14,7 @@ mount_and_update_fstab() {
     temp_file=$(mktemp)
     grep -vF "/dev/${dev_name}" /etc/fstab | tee "${temp_file}"
     echo "/dev/${dev_name} ${mount_point} ${expected_fs} defaults,nofail 0" | tee -a "${temp_file}" > /dev/null
-    sudo tee /etc/fstab < "${temp_file}" > /dev/null
+    sudo tee /etc/fstab > /dev/null < "${temp_file}"
     rm -f "${temp_file}"
   else
     echo "/dev/${dev_name} ${mount_point} ${expected_fs} defaults,nofail 0" | sudo tee -a /etc/fstab > /dev/null

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -v
+set -ex
 . constants.sh
 
 # mount gv-chia volume from glusterfs to user's home directory
@@ -15,5 +15,5 @@ fi
 temp_file=$(mktemp)
 grep -vF "${glusterfs_master_host}:/gv-chia" /etc/fstab | tee "${temp_file}"
 echo "${glusterfs_master_host}:/gv-chia ${HOME}/gv-chia glusterfs defaults,_netdev,x-systemd.requires=glusterd.service,x-systemd.automount 0 0" | tee -a "${temp_file}" > /dev/null
-sudo tee /etc/fstab < "${temp_file}" > /dev/null
+sudo tee /etc/fstab > /dev/null < "${temp_file}"
 rm -f "${temp_file}"

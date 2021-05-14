@@ -33,17 +33,7 @@ sudo systemctl enable glusterd
 sudo systemctl start glusterd
 sudo systemctl status glusterd
 
-sudo hostnamectl set-hostname glusterfs-master
-
-volume_created='false'
+# instruct master to probe and add me as gv-chia bricks
 for gshare_dir in /gshare/*; do
-  if [ "${volume_created}" = 'true' ]; then
-    sudo gluster volume add-brick gv-chia "${glusterfs_master_host}:/${gshare_dir}/data" force
-  else
-    sudo gluster volume create gv-chia "${glusterfs_master_host}:/${gshare_dir}/data" force
-    sudo gluster volume set gv-chia storage.owner-uid 1000
-    sudo gluster volume set gv-chia storage.owner-gid 1000
-    sudo gluster volume start gv-chia
-    volume_created=true
-  fi
+  ssh "${glusterfs_master_host}" gluster volume add-brick gv-chia "$(hostname -I):/${gshare_dir}/data" force
 done

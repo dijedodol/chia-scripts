@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -v
+set -ex
 
 sudo apt install -y software-properties-common
 sudo add-apt-repository ppa:gluster/glusterfs-9

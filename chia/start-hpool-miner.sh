@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -v
+set -ex
 . constants.sh
 
 /usr/bin/env bash

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -v
+set -ex
 
 sudo apt-get update
 sudo apt-get upgrade -y
