@@ -47,3 +47,5 @@ for gshare_dir in /gshare/*; do
     volume_created=true
   fi
 done
+
+(sudo crontab -u "${USER}" -l ; echo '* * * * * cd "${HOME}/chia-scripts"; glusterfs/mount-disks.sh cron') | sudo crontab -u "${USER}" -

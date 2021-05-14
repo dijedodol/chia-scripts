@@ -2,13 +2,26 @@
 set -ex
 
 expected_fs='xfs'
+run_type='ec2-init'
+
+if [ -z "$1" ]; then
+  run_type="$1"
+fi
 
 mount_and_update_fstab() {
   local dev_name="$1"
   local mount_point="$2"
 
   sudo mount "/dev/${dev_name}" "${mount_point}"
-  fstab_count=$(grep "/dev/${dev_name}" /etc/fstab | wc -l)
+  sudo mkdir -p "${mount_point}/data"
+
+  # if it's ran by a scheduler, we wants to have the new mounted disks
+  # to be added to the glusterfs array as well
+  if [ "$run_type" = 'cron' ]; then
+    sudo gluster volume add-brick gv-chia "$(hostname -I):${mount_point}/data" force
+  fi
+
+  fstab_count=$(grep -c "/dev/${dev_name}" /etc/fstab)
   if [ "${fstab_count}" -gt 0 ]; then
     # update fstab, remove the same previous entry if exists
     temp_file=$(mktemp)
@@ -29,12 +42,10 @@ lsblk --json | jq -c '.blockdevices[] | select(.mountpoint == null and .type == 
   fs=$(sudo blkid "/dev/${dev_name}" -o value -s TYPE)
   if [ "${fs}" = "${expected_fs}" ]; then
     mount_and_update_fstab "${dev_name}" "/gshare/${dev_name}"
-    sudo mkdir -p "/gshare/${dev_name}/data"
   elif [ -z "$fs" ]; then
     echo "formatting block_device because there is no filesystem detected on block_device: ${dev_name}"
     sudo mkfs -t "${expected_fs}" "/dev/${dev_name}"
     mount_and_update_fstab "${dev_name}" "/gshare/${dev_name}"
-    sudo mkdir -p "/gshare/${dev_name}/data"
   else
     echo "skipping block_device: ${dev_name}, unexpected existing filesystem: ${fs}"
   fi
