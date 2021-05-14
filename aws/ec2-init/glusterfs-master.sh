@@ -19,9 +19,9 @@ cd "${HOME}/chia-scripts"
 glusterfs/install.sh
 glusterfs/mount-disks.sh
 
-systemctl enable glusterd
-systemctl start glusterd
-systemctl status glusterd
+sudo systemctl enable glusterd
+sudo systemctl start glusterd
+sudo systemctl status glusterd
 
 sudo hostnamectl set-hostname glusterfs-master
 
