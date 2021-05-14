@@ -26,20 +26,14 @@ sudo systemctl status glusterd
 sudo hostnamectl set-hostname glusterfs-master
 
 volume_created='false'
-for dev_name in /gshare/*; do
+for gshare_dir in /gshare/*; do
   if [ "${volume_created}" = 'true' ]; then
-    sudo gluster volume add-brick gv-chia "${glusterfs_master_host}:/gshare/${dev_name}/data" force
+    sudo gluster volume add-brick gv-chia "${glusterfs_master_host}:/${gshare_dir}/data" force
   else
-    sudo gluster volume create gv-chia "${glusterfs_master_host}:/gshare/${dev_name}/data" force
+    sudo gluster volume create gv-chia "${glusterfs_master_host}:/${gshare_dir}/data" force
+    sudo gluster volume set gv-chia storage.owner-uid 1000
+    sudo gluster volume set gv-chia storage.owner-gid 1000
+    sudo gluster volume start gv-chia
     volume_created=true
   fi
 done
-
-if [ "${volume_created}" = 'true' ]; then
-  sudo gluster volume set gv-chia storage.owner-uid 1000
-  sudo gluster volume set gv-chia storage.owner-gid 1000
-  sudo gluster volume start gv-chia
-else
-  echo "gv-chia volume creation failed"
-  exit 1
-fi
