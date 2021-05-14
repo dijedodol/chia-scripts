@@ -26,12 +26,17 @@ sudo mkfs -t ext4 /dev/nvme0n1
 sudo mount /dev/nvme0n1 "${HOME}/plots-tmp"
 sudo chown -R "${USER}:" "${HOME}/plots-tmp"
 
-# update fstab, remove the same previous entry if exists
-temp_file=$(mktemp)
-grep -vF "/dev/nvme0n1" /etc/fstab | tee "${temp_file}"
-echo "/dev/nvme0n1 ${HOME}/plots-tmp ext4 defaults,nofail 0" | tee -a "${temp_file}" > /dev/null
-sudo tee /etc/fstab < "${temp_file}" > /dev/null
-rm -f "${temp_file}"
+fstab_count=$(grep "/dev/${dev_name}" /etc/fstab | wc -l)
+if [ "${fstab_count}" -gt 0 ]; then
+  # update fstab, remove the same previous entry if exists
+  temp_file=$(mktemp)
+  grep -vF "/dev/nvme0n1" /etc/fstab | tee "${temp_file}"
+  echo "/dev/nvme0n1 ${HOME}/plots-tmp ext4 defaults,nofail 0" | tee -a "${temp_file}" > /dev/null
+  sudo tee /etc/fstab < "${temp_file}" > /dev/null
+  rm -f "${temp_file}"
+else
+  echo "/dev/nvme0n1 ${HOME}/plots-tmp ext4 defaults,nofail 0" | sudo tee -a /etc/fstab > /dev/null
+fi
 
 # chia install & setup systemd unit
 chia/install.sh

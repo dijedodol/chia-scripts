@@ -8,7 +8,7 @@ mount_and_update_fstab() {
   local mount_point="$2"
 
   sudo mount "/dev/${dev_name}" "${mount_point}"
-  fstab_count=$(grep -vF "/dev/${dev_name}" /etc/fstab)
+  fstab_count=$(grep "/dev/${dev_name}" /etc/fstab | wc -l)
   if [ "${fstab_count}" -gt 0 ]; then
     # update fstab, remove the same previous entry if exists
     temp_file=$(mktemp)
