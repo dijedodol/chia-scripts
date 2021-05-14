@@ -24,7 +24,7 @@ mount_and_update_fstab() {
   fstab_count="$(grep -c "/dev/${dev_name}" /etc/fstab)"
   if [ "${fstab_count}" -gt 0 ]; then
     # update fstab, remove the same previous entry if exists
-    temp_file=$(mktemp)
+    temp_file="$(mktemp)"
     grep -vF "/dev/${dev_name}" /etc/fstab | tee "${temp_file}"
     echo "/dev/${dev_name} ${mount_point} ${expected_fs} defaults,nofail 0" | tee -a "${temp_file}" > /dev/null
     sudo tee /etc/fstab > /dev/null < "${temp_file}"
@@ -39,7 +39,7 @@ lsblk --json | jq -c '.blockdevices[] | select(.mountpoint == null and .type == 
   echo "dev_name: ${dev_name}"
   sudo mkdir -p "/gshare/${dev_name}"
 
-  fs=$(sudo blkid "/dev/${dev_name}" -o value -s TYPE)
+  fs="$(sudo blkid "/dev/${dev_name}" -o value -s TYPE)"
   if [ "${fs}" = "${expected_fs}" ]; then
     mount_and_update_fstab "${dev_name}" "/gshare/${dev_name}"
   elif [ -z "$fs" ]; then

@@ -7,8 +7,8 @@ run_type="$2"
 
 # setup working directory
 if [ -z "${suffix}" ]; then
-  curr_date=$(date '+%Y%m%d%H%M%S')
-  rand_guid=$(uuidgen)
+  curr_date="$(date '+%Y%m%d%H%M%S')"
+  rand_guid="$(uuidgen)"
   suffix="${curr_date}-${rand_guid}"
 fi
 plots_tmp_dir="${HOME}/plots-tmp/${suffix}"

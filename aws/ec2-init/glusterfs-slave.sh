@@ -34,7 +34,7 @@ sudo systemctl start glusterd
 sudo systemctl status glusterd
 
 # instruct master to probe and add me as gv-chia bricks
-ssh "${glusterfs_master_host}" sudo gluster peer probe $(hostname -I)
+ssh "${glusterfs_master_host}" sudo gluster peer probe "$(hostname -I)"
 for gshare_dir in /gshare/*; do
   ssh "${glusterfs_master_host}" sudo gluster volume add-brick gv-chia "$(hostname -I):/${gshare_dir}/data" force
 done
