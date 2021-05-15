@@ -1,0 +1,9 @@
+#!/usr/bin/expect -f
+
+set timeout -1
+spawn bash -c 'glusterfs/remove-tmp-gshare.sh'
+match_max 100000
+expect -exact "Remove-brick force will not migrate files from the removed bricks, so they will no longer be available on the volume.\r
+Do you want to continue? (y/n) "
+send -- "y\r"
+expect eof

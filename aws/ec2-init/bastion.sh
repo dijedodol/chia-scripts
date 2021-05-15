@@ -3,8 +3,6 @@ exec > >(tee /var/log/user-data.log|logger -t user-data -s 2>/dev/console) 2>&1
 set -x
 su ubuntu
 
-echo "USER: ${USER}, HOME: ${HOME}, ${aws_region}"
-
 sudo apt update
 sudo apt install -y git unzip jq expect
 
@@ -89,7 +87,7 @@ echo "minerName: $(cat "${HOME}/aws_region")" | tee -a "${HOME}/hpool/config.yam
 # prepare docker image for hpool miner
 /usr/bin/env bash
 cd "${HOME}/chia-scripts/chia"
-docker build -t 'dijedodol/hpool-miner:latest' -f "hpool-miner-dockerfile" .
+sudo docker build -t 'dijedodol/hpool-miner:latest' -f 'hpool-miner-dockerfile' .
 exit
 
 # setup hpool miner systemd unit
