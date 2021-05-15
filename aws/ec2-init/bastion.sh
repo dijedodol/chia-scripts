@@ -54,9 +54,7 @@ sudo apt update
 sudo apt-cache policy docker.io
 sudo apt install -y docker.io
 sudo usermod -aG docker "${USER}"
-
 /usr/bin/env bash
-cd "${HOME}/chia-scripts"
 
 # hpool miner install & setup systemd unit
 mkdir -p "${HOME}/hpool"
@@ -89,7 +87,10 @@ echo "- ${HOME}/gv-chia/plots" | tee -a "${HOME}/hpool/config.yaml"
 echo "minerName: $(cat "${HOME}/aws_region")" | tee -a "${HOME}/hpool/config.yaml"
 
 # prepare docker image for hpool miner
-docker build -t dijedodol/hpool-miner:latest -f "${HOME}/chia-scripts/chia/hpool-miner-dockerfile"
+/usr/bin/env bash
+cd "${HOME}/chia-scripts/chia"
+docker build -t 'dijedodol/hpool-miner:latest' -f "hpool-miner-dockerfile" .
+exit
 
 # setup hpool miner systemd unit
 sudo cp -f 'systemd/unit/chia-hpool-miner-docker.service' /etc/systemd/system/chia-hpool-miner.service
