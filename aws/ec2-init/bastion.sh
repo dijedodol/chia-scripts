@@ -3,7 +3,7 @@ exec > >(tee /var/log/user-data.log|logger -t user-data -s 2>/dev/console) 2>&1
 set -x
 
 apt update
-apt install -y git
+apt install -y git unzip
 su - ubuntu
 
 cd "${HOME}"
@@ -53,8 +53,7 @@ sudo apt update
 sudo apt-cache policy docker.io
 sudo apt install -y docker.io
 sudo usermod -aG docker "${USER}"
-exit
-su - ubuntu
+/usr/bin/env bash
 
 # hpool miner install & setup systemd unit
 mkdir -p "${HOME}/hpool"
