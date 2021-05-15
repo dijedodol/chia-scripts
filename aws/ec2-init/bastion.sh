@@ -52,7 +52,6 @@ sudo apt update
 sudo apt-cache policy docker.io
 sudo apt install -y docker.io
 sudo usermod -aG docker "${USER}"
-/usr/bin/env bash
 
 # hpool miner install & setup systemd unit
 mkdir -p "${HOME}/hpool"

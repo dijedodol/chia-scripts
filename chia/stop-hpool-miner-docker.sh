@@ -2,4 +2,4 @@
 set -x
 . constants.sh
 
-docker stop hpool-miner
+sudo docker stop hpool-miner
