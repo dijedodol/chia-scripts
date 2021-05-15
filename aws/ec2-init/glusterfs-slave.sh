@@ -26,13 +26,10 @@ chmod 600 "${HOME}/.ssh/config" "${HOME}/.ssh/authorized_keys"
 chmod 400 "${HOME}/.ssh/id_rsa"
 
 glusterfs/install.sh
-glusterfs/mount-disks.sh
-
 sudo systemctl enable glusterd
 sudo systemctl start glusterd
 sudo systemctl status glusterd
-
-(sudo crontab -u "${USER}" -l ; echo '* * * * * cd "${HOME}/chia-scripts"; glusterfs/mount-disks.sh cron') | sudo crontab -u "${USER}" -
+glusterfs/mount-disks.sh
 
 # instruct master to probe and add me as gv-chia bricks
 # user xargs to remove extra whitespace produced by hostname -I
@@ -50,5 +47,8 @@ done
 
 echo 'adding brick(s) at /gshare/*'
 for gshare_dir in /gshare/*; do
-  ssh "${glusterfs_master_host}" sudo gluster volume add-brick gv-chia "$(hostname -I | xargs echo -n):${gshare_dir}/data" force
+  sleep 1s
+  sudo gluster volume add-brick gv-chia "$(hostname -I | xargs echo -n):${gshare_dir}/data" force
 done
+
+(sudo crontab -u "${USER}" -l ; echo '* * * * * cd "${HOME}/chia-scripts"; glusterfs/mount-disks.sh cron') | sudo crontab -u "${USER}" -

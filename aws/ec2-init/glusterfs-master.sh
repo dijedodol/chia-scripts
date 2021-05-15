@@ -26,13 +26,10 @@ chmod 600 "${HOME}/.ssh/config" "${HOME}/.ssh/authorized_keys"
 chmod 400 "${HOME}/.ssh/id_rsa"
 
 glusterfs/install.sh
-glusterfs/mount-disks.sh
-
 sudo systemctl enable glusterd
 sudo systemctl start glusterd
 sudo systemctl status glusterd
-
-(sudo crontab -u "${USER}" -l ; echo '* * * * * cd "${HOME}/chia-scripts"; glusterfs/mount-disks.sh cron') | sudo crontab -u "${USER}" -
+glusterfs/mount-disks.sh
 
 sudo hostnamectl set-hostname glusterfs-master
 
@@ -59,3 +56,5 @@ for gshare_dir in /gshare/*; do
     volume_created=true
   fi
 done
+
+(sudo crontab -u "${USER}" -l ; echo '* * * * * cd "${HOME}/chia-scripts"; glusterfs/mount-disks.sh cron') | sudo crontab -u "${USER}" -

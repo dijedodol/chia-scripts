@@ -18,6 +18,7 @@ mount_and_update_fstab() {
   # if it's ran by a scheduler, we wants to have the new mounted disks
   # to be added to the glusterfs array as well
   if [ "$run_type" = 'cron' ]; then
+    sleep 1s
     sudo gluster volume add-brick gv-chia "$(hostname -I | xargs echo -n):${mount_point}/data" force
   fi
 
