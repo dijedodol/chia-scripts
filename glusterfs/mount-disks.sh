@@ -18,7 +18,7 @@ mount_and_update_fstab() {
   # if it's ran by a scheduler, we wants to have the new mounted disks
   # to be added to the glusterfs array as well
   if [ "$run_type" = 'cron' ]; then
-    sudo gluster volume add-brick gv-chia "$(hostname -I):${mount_point}/data" force
+    sudo gluster volume add-brick gv-chia "$(hostname -I | xargs echo -n):${mount_point}/data" force
   fi
 
   fstab_count="$(grep -cF "/dev/${dev_name}" /etc/fstab)"
