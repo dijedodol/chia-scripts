@@ -41,6 +41,15 @@ sudo gluster volume create gv-chia "${glusterfs_master_host}:/tmp-gshare/data" f
 sudo gluster volume set gv-chia storage.owner-uid 1000
 sudo gluster volume set gv-chia storage.owner-gid 1000
 
+gshare_count="$(ls -l /gshare/* | wc -l)"
+while [ "${gshare_count}" -eq 0 ]; do
+  echo 'awaiting brick(s) to be available at /gshare/*'
+  sleep 5s
+  glusterfs/mount-disks.sh
+  gshare_count="$(ls -l /gshare/* | wc -l)"
+done
+
+echo 'adding brick(s) at /gshare/*'
 for gshare_dir in /gshare/*; do
   sudo gluster volume add-brick gv-chia "${glusterfs_master_host}:${gshare_dir}/data" force
 done

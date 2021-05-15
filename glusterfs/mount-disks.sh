@@ -21,7 +21,7 @@ mount_and_update_fstab() {
     sudo gluster volume add-brick gv-chia "$(hostname -I):${mount_point}/data" force
   fi
 
-  fstab_count="$(grep -c "/dev/${dev_name}" /etc/fstab)"
+  fstab_count="$(grep -cF "/dev/${dev_name}" /etc/fstab)"
   if [ "${fstab_count}" -gt 0 ]; then
     # update fstab, remove the same previous entry if exists
     temp_file="$(mktemp)"

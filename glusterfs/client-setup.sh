@@ -11,7 +11,7 @@ if [ "${exit_code}" -ne 0 ]; then
     exit $exit_code
 fi
 
-fstab_count="$(grep -c "${glusterfs_master_host}:/gv-chia" /etc/fstab)"
+fstab_count="$(grep -cF "${glusterfs_master_host}:/gv-chia" /etc/fstab)"
 if [ "${fstab_count}" -gt 0 ]; then
   # update fstab, remove the same previous entry if exists
   temp_file="$(mktemp)"
