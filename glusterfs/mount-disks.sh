@@ -36,6 +36,7 @@ mount_and_update_fstab() {
 
 # mount any available disk
 lsblk --json | jq -c '.blockdevices[] | select(.mountpoint == null and .type == "disk" and .children == null) | .name' | jq -r | while read -r dev_name; do
+  sleep 1s
   echo "dev_name: ${dev_name}"
   sudo mkdir -p "/gshare/${dev_name}"
 

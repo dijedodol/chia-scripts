@@ -37,15 +37,18 @@ sudo systemctl status glusterd
 sudo hostnamectl set-hostname glusterfs-master
 
 gshare_count="$(ls -l /gshare/* | wc -l)"
-while [ "${gshare_count}" -eq 0 ]; do
-  echo 'awaiting brick(s) to be available at /gshare/*'
+lsblk_count="$(lsblk --json | jq -c '.blockdevices[] | select(.mountpoint == null and .type == "disk" and .children == null) | .name' | jq -r | wc -l)"
+while [ "${gshare_count}" -eq 0 ] || [ "${gshare_count}" -lt "${lsblk_count}" ]; do
+  echo "awaiting brick(s) to be available at /gshare/*, gshare_count: ${gshare_count}, lsblk_count: ${lsblk_count}"
   sleep 5s
   glusterfs/mount-disks.sh
   gshare_count="$(ls -l /gshare/* | wc -l)"
+  lsblk_count="$(lsblk --json | jq -c '.blockdevices[] | select(.mountpoint == null and .type == "disk" and .children == null) | .name' | jq -r | wc -l)"
 done
 
 volume_created='false'
 for gshare_dir in /gshare/*; do
+  sleep 1s
   if [ "${volume_created}" = 'true' ]; then
     sudo gluster volume add-brick gv-chia "${glusterfs_master_host}:${gshare_dir}/data" force
   else
