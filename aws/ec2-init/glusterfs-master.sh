@@ -4,11 +4,11 @@ set -x
 
 apt update
 apt install -y git jq
-su ubuntu
+su - ubuntu
 
 cd "${HOME}"
 if [ -n "${aws_region}" ]; then
-  echo "${aws_region}" | tee aws_region
+  echo "${aws_region}" | tee "${HOME}/aws_region"
 fi
 
 git clone 'https://github.com/dijedodol/chia-scripts.git' "${HOME}/chia-scripts"
@@ -38,15 +38,15 @@ sudo systemctl status glusterd
 sudo hostnamectl set-hostname glusterfs-master
 
 # TODO: GOTTA HANDLE WHEN VM WAS STARTING, BUT THERE IS NO DISK ATTACHED YET
-volume_created='false'
+mkdir /tmp-gshare/data
+sudo gluster volume create gv-chia "${glusterfs_master_host}:/tmp-gshare/data" force
+sudo gluster volume set gv-chia storage.owner-uid 1000
+sudo gluster volume set gv-chia storage.owner-gid 1000
+sudo gluster volume start gv-chia
+
 for gshare_dir in /gshare/*; do
-  if [ "${volume_created}" = 'true' ]; then
-    sudo gluster volume add-brick gv-chia "${glusterfs_master_host}:${gshare_dir}/data" force
-  else
-    sudo gluster volume create gv-chia "${glusterfs_master_host}:${gshare_dir}/data" force
-    sudo gluster volume set gv-chia storage.owner-uid 1000
-    sudo gluster volume set gv-chia storage.owner-gid 1000
-    sudo gluster volume start gv-chia
-    volume_created=true
-  fi
+  sudo gluster volume add-brick gv-chia "${glusterfs_master_host}:${gshare_dir}/data" force
 done
+volume remove-brick gv-chia "${glusterfs_master_host}:/tmp-gshare/data" start
+sleep 10s
+volume remove-brick gv-chia "${glusterfs_master_host}:/tmp-gshare/data" commit

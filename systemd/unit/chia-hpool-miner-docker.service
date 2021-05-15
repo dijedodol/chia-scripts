@@ -1,0 +1,17 @@
+[Unit]
+Description="Dockerized Chia HPool Miner service"
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=simple
+RestartSec=1s
+Restart=always
+User=ubuntu
+Group=ubuntu
+WorkingDirectory=/home/ubuntu/chia-scripts
+ExecStart=/home/ubuntu/chia-scripts/chia/start-hpool-miner-docker.sh
+ExecStop=/home/ubuntu/chia-scripts/chia/stop-hpool-miner-docker.sh
+
+[Install]
+WantedBy=multi-user.target

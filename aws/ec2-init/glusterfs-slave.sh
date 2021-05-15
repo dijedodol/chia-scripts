@@ -4,11 +4,11 @@ set -x
 
 apt update
 apt install -y git jq
-su ubuntu
+su - ubuntu
 
 cd "${HOME}"
 if [ -n "${aws_region}" ]; then
-  echo "${aws_region}" | tee aws_region
+  echo "${aws_region}" | tee "${HOME}/aws_region"
 fi
 
 git clone 'https://github.com/dijedodol/chia-scripts.git' "${HOME}/chia-scripts"
