@@ -33,6 +33,7 @@ glusterfs/mount-disks.sh
 
 sudo hostnamectl set-hostname glusterfs-master
 
+# wait for brick disk(s) to be available
 gshare_count="$(ls -l /gshare/* | wc -l)"
 lsblk_count="$(lsblk --json | jq -c '.blockdevices[] | select(.mountpoint == null and .type == "disk" and .children == null) | .name' | jq -r | wc -l)"
 while [ "${gshare_count}" -eq 0 ] || [ "${gshare_count}" -lt "${lsblk_count}" ]; do
@@ -43,6 +44,7 @@ while [ "${gshare_count}" -eq 0 ] || [ "${gshare_count}" -lt "${lsblk_count}" ];
   lsblk_count="$(lsblk --json | jq -c '.blockdevices[] | select(.mountpoint == null and .type == "disk" and .children == null) | .name' | jq -r | wc -l)"
 done
 
+# start creating volume and add bricks
 volume_created='false'
 for gshare_dir in /gshare/*; do
   sleep 1s
@@ -53,8 +55,8 @@ for gshare_dir in /gshare/*; do
     sudo gluster volume set gv-chia storage.owner-uid 1000
     sudo gluster volume set gv-chia storage.owner-gid 1000
     sudo gluster volume start gv-chia
-    volume_created=true
+    volume_created='true'
   fi
 done
 
-(sudo crontab -u "${USER}" -l ; echo '* * * * * cd "${HOME}/chia-scripts"; glusterfs/mount-disks.sh cron') | sudo crontab -u "${USER}" -
+(sudo crontab -u "${USER}" -l ; echo '* * * * * cd "${HOME}/chia-scripts"; glusterfs/sync-disks.sh') | sudo crontab -u "${USER}" -

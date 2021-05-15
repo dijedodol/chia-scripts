@@ -31,24 +31,8 @@ sudo systemctl start glusterd
 sudo systemctl status glusterd
 glusterfs/mount-disks.sh
 
+(sudo crontab -u "${USER}" -l ; echo '* * * * * cd "${HOME}/chia-scripts"; glusterfs/sync-disks.sh') | sudo crontab -u "${USER}" -
+
 # instruct master to probe and add me as gv-chia bricks
 # user xargs to remove extra whitespace produced by hostname -I
 ssh "${glusterfs_master_host}" sudo gluster peer probe "$(hostname -I | xargs echo -n)"
-
-gshare_count="$(ls -l /gshare/* | wc -l)"
-lsblk_count="$(lsblk --json | jq -c '.blockdevices[] | select(.mountpoint == null and .type == "disk" and .children == null) | .name' | jq -r | wc -l)"
-while [ "${gshare_count}" -eq 0 ]; do
-  echo 'awaiting brick(s) to be available at /gshare/*'
-  sleep 5s
-  glusterfs/mount-disks.sh
-  gshare_count="$(ls -l /gshare/* | wc -l)"
-  lsblk_count="$(lsblk --json | jq -c '.blockdevices[] | select(.mountpoint == null and .type == "disk" and .children == null) | .name' | jq -r | wc -l)"
-done
-
-echo 'adding brick(s) at /gshare/*'
-for gshare_dir in /gshare/*; do
-  sleep 1s
-  sudo gluster volume add-brick gv-chia "$(hostname -I | xargs echo -n):${gshare_dir}/data" force
-done
-
-(sudo crontab -u "${USER}" -l ; echo '* * * * * cd "${HOME}/chia-scripts"; glusterfs/mount-disks.sh cron') | sudo crontab -u "${USER}" -

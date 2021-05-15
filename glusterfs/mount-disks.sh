@@ -2,11 +2,6 @@
 set -x
 
 expected_fs='xfs'
-run_type='ec2-init'
-
-if [ -n "$1" ]; then
-  run_type="$1"
-fi
 
 mount_and_update_fstab() {
   local dev_name="$1"
@@ -14,13 +9,6 @@ mount_and_update_fstab() {
 
   sudo mount "/dev/${dev_name}" "${mount_point}"
   sudo mkdir -p "${mount_point}/data"
-
-  # if it's ran by a scheduler, we wants to have the new mounted disks
-  # to be added to the glusterfs array as well
-  if [ "$run_type" = 'cron' ]; then
-    sleep 1s
-    sudo gluster volume add-brick gv-chia "$(hostname -I | xargs echo -n):${mount_point}/data" force
-  fi
 
   fstab_count="$(grep -cF "/dev/${dev_name}" /etc/fstab)"
   if [ "${fstab_count}" -gt 0 ]; then
