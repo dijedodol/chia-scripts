@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 exec > >(tee /var/log/user-data.log|logger -t user-data -s 2>/dev/console) 2>&1
 set -x
+su ubuntu
+
+echo "USER: ${USER}, HOME: ${HOME}, ${aws_region}"
 
 sudo apt update
 sudo apt install -y git unzip jq expect
