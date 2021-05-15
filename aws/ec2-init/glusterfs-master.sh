@@ -40,11 +40,11 @@ sudo mkdir -p /tmp-gshare/data
 sudo gluster volume create gv-chia "${glusterfs_master_host}:/tmp-gshare/data" force
 sudo gluster volume set gv-chia storage.owner-uid 1000
 sudo gluster volume set gv-chia storage.owner-gid 1000
-sudo gluster volume start gv-chia
 
 for gshare_dir in /gshare/*; do
   sudo gluster volume add-brick gv-chia "${glusterfs_master_host}:${gshare_dir}/data" force
 done
-volume remove-brick gv-chia "${glusterfs_master_host}:/tmp-gshare/data" start
-sleep 10s
-volume remove-brick gv-chia "${glusterfs_master_host}:/tmp-gshare/data" commit
+
+sudo gluster volume remove-brick gv-chia "${glusterfs_master_host}:/tmp-gshare/data" force
+sudo rm -rf /tmp-gshare
+sudo gluster volume start gv-chia
