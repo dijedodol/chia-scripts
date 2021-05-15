@@ -6,6 +6,9 @@ apt update
 apt install -y git jq
 su - ubuntu
 
+echo "home: ${HOME}"
+echo "aws_region: ${aws_region}"
+
 cd "${HOME}"
 if [ -n "${aws_region}" ]; then
   echo "${aws_region}" | tee "${HOME}/aws_region"
@@ -38,7 +41,7 @@ sudo systemctl status glusterd
 sudo hostnamectl set-hostname glusterfs-master
 
 # TODO: GOTTA HANDLE WHEN VM WAS STARTING, BUT THERE IS NO DISK ATTACHED YET
-mkdir /tmp-gshare/data
+sudo mkdir -p /tmp-gshare/data
 sudo gluster volume create gv-chia "${glusterfs_master_host}:/tmp-gshare/data" force
 sudo gluster volume set gv-chia storage.owner-uid 1000
 sudo gluster volume set gv-chia storage.owner-gid 1000

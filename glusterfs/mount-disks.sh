@@ -4,7 +4,7 @@ set -x
 expected_fs='xfs'
 run_type='ec2-init'
 
-if [ -z "$1" ]; then
+if [ -n "$1" ]; then
   run_type="$1"
 fi
 
