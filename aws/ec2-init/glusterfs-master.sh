@@ -3,7 +3,7 @@ exec > >(tee /var/log/user-data.log|logger -t user-data -s 2>/dev/console) 2>&1
 set -x
 
 sudo apt update
-sudo apt install -y git unzip jq
+sudo apt install -y git unzip jq expect
 
 if [ -n "${aws_region}" ]; then
   echo "${aws_region}" | tee "${HOME}/aws_region"
@@ -35,7 +35,6 @@ sudo systemctl status glusterd
 
 sudo hostnamectl set-hostname glusterfs-master
 
-# TODO: GOTTA HANDLE WHEN VM WAS STARTING, BUT THERE IS NO DISK ATTACHED YET
 sudo mkdir -p /tmp-gshare/data
 sudo gluster volume create gv-chia "${glusterfs_master_host}:/tmp-gshare/data" force
 sudo gluster volume set gv-chia storage.owner-uid 1000
@@ -45,6 +44,6 @@ for gshare_dir in /gshare/*; do
   sudo gluster volume add-brick gv-chia "${glusterfs_master_host}:${gshare_dir}/data" force
 done
 
-sudo gluster volume remove-brick gv-chia "${glusterfs_master_host}:/tmp-gshare/data" force
+glusterfs/remove-tmp-gshare.sh
 sudo rm -rf /tmp-gshare
 sudo gluster volume start gv-chia
