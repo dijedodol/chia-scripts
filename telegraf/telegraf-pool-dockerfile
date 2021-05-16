@@ -1,0 +1,4 @@
+FROM telegraf:1.18
+COPY conf.d/telegraf-pool.conf /etc/telegraf/telegraf.d/
+EXPOSE 18080/tcp
+EXPOSE 9273/tcp
