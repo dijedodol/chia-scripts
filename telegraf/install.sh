@@ -17,7 +17,7 @@ echo "user_home="'"'"${HOME}"'"' | sudo tee -a /etc/default/telegraf
 
 sudo cp -f telegraf/conf.d/telegraf-node.conf /etc/telegraf/telegraf.conf
 if [ "${instance_type}" = 'glusterfs' ]; then
-  cp -f telegraf/conf.d/telegraf-node-glusterfs.conf /etc/telegraf/telegraf.d/
+  sudo cp -f telegraf/conf.d/telegraf-node-glusterfs.conf /etc/telegraf/telegraf.d/
 fi
 
 sudo systemctl enable telegraf
