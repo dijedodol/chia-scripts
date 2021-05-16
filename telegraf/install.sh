@@ -15,9 +15,9 @@ sudo apt-get update && sudo apt-get install telegraf
 echo "aws_region="'"'"$(cat "${HOME}/aws_region")"'"' | sudo tee -a /etc/default/telegraf
 echo "user_home="'"'"${HOME}"'"' | sudo tee -a /etc/default/telegraf
 
-sudo cp -f telegraf/conf.d/telegraf-node.conf /etc/telegraf/telegraf.d/etc/telegraf/telegraf.conf
+sudo cp -f telegraf/conf.d/telegraf-node.conf /etc/telegraf/telegraf.conf
 if [ "${instance_type}" = 'glusterfs' ]; then
-  cp -f telegraf/telegraf-node-glusterfs.conf /etc/telegraf/telegraf.d/
+  cp -f telegraf/conf.d/telegraf-node-glusterfs.conf /etc/telegraf/telegraf.d/
 fi
 
 sudo systemctl enable telegraf
