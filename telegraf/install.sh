@@ -21,4 +21,4 @@ if [ "${instance_type}" = 'glusterfs' ]; then
 fi
 
 sudo systemctl enable telegraf
-sudo systemctl start telegraf
+sudo systemctl restart telegraf
