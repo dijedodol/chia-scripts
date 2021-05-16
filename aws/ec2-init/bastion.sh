@@ -15,8 +15,19 @@ git clone 'https://github.com/dijedodol/chia-scripts.git' "${HOME}/chia-scripts"
 cd "${HOME}/chia-scripts"
 . constants.sh
 
+# prepare hostname & ssh
 sudo hostnamectl set-hostname "$(cat "${HOME}/aws_region")"
+tee -a "${HOME}/.ssh/config" > /dev/null <<EOF
+Host *
+    StrictHostKeyChecking no
+EOF
+if [ -n "${ssh_id_rsa_base64}" ]; then
+  echo "${ssh_id_rsa_base64}" | base64 -d | tee "${HOME}/.ssh/id_rsa" > /dev/null
+fi
+chmod 600 "${HOME}/.ssh/config"
+chmod 400 "${HOME}/.ssh/id_rsa"
 
+# prepare glusterfs
 glusterfs/install.sh
 glusterfs/client-setup.sh
 mkdir -p "${HOME}/gv-chia/plots"
@@ -95,3 +106,22 @@ exit
 sudo cp -f 'systemd/unit/chia-hpool-miner-docker.service' /etc/systemd/system/chia-hpool-miner.service
 sudo systemctl enable 'chia-hpool-miner'
 sudo systemctl start 'chia-hpool-miner'
+
+# ansible
+sudo apt install -y ansible
+
+echo '[glusterfs_master]' | sudo tee -a /etc/ansible/hosts > /dev/null
+echo '172.31.144.50' | sudo tee -a /etc/ansible/hosts > /dev/null
+
+echo '[glusterfs]' | sudo tee -a /etc/ansible/hosts > /dev/null
+echo '172.31.144.50' | sudo tee -a /etc/ansible/hosts > /dev/null
+echo '172.31.144.51' | sudo tee -a /etc/ansible/hosts > /dev/null
+
+echo '[chia_ploter]' | sudo tee -a /etc/ansible/hosts > /dev/null
+echo '172.31.128.10' | sudo tee -a /etc/ansible/hosts > /dev/null
+echo '172.31.144.100' | sudo tee -a /etc/ansible/hosts > /dev/null
+echo '172.31.144.101' | sudo tee -a /etc/ansible/hosts > /dev/null
+echo '172.31.144.102' | sudo tee -a /etc/ansible/hosts > /dev/null
+
+echo '[chia_hpool_miner]' | sudo tee -a /etc/ansible/hosts > /dev/null
+echo '172.31.128.10' | sudo tee -a /etc/ansible/hosts > /dev/null

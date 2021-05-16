@@ -25,6 +25,7 @@ cp -f ssh-keys/glusterfs/id_rsa "${HOME}/.ssh/id_rsa"
 chmod 600 "${HOME}/.ssh/config" "${HOME}/.ssh/authorized_keys"
 chmod 400 "${HOME}/.ssh/id_rsa"
 
+# prepare glusterfs
 glusterfs/install.sh
 sudo systemctl enable glusterd
 sudo systemctl start glusterd

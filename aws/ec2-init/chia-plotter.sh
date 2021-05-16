@@ -15,6 +15,7 @@ git clone 'https://github.com/dijedodol/chia-scripts.git' "${HOME}/chia-scripts"
 cd "${HOME}/chia-scripts"
 . constants.sh
 
+# prepare glusterfs
 glusterfs/install.sh
 glusterfs/client-setup.sh
 mkdir -p "${HOME}/gv-chia/plots"
