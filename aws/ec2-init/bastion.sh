@@ -131,7 +131,7 @@ echo '[glusterfs]' | sudo tee -a /etc/ansible/hosts > /dev/null
 echo '172.31.144.50' | sudo tee -a /etc/ansible/hosts > /dev/null
 echo '172.31.144.51' | sudo tee -a /etc/ansible/hosts > /dev/null
 
-echo '[chia_ploter]' | sudo tee -a /etc/ansible/hosts > /dev/null
+echo '[chia_plotter]' | sudo tee -a /etc/ansible/hosts > /dev/null
 echo '172.31.128.10' | sudo tee -a /etc/ansible/hosts > /dev/null
 echo '172.31.144.100' | sudo tee -a /etc/ansible/hosts > /dev/null
 echo '172.31.144.101' | sudo tee -a /etc/ansible/hosts > /dev/null
