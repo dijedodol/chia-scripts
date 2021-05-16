@@ -61,3 +61,6 @@ for gshare_dir in /gshare/*; do
 done
 
 (sudo crontab -u "${USER}" -l ; echo '* * * * * cd "${HOME}/chia-scripts"; glusterfs/sync-disks.sh') | sudo crontab -u "${USER}" -
+
+# setup node telegraf
+telegraf/install.sh glusterfs

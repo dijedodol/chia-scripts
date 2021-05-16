@@ -46,3 +46,6 @@ sudo systemctl enable 'chia-plotter@1'
 sudo systemctl enable 'chia-plotter@2'
 sudo systemctl start 'chia-plotter@1'
 sudo systemctl start 'chia-plotter@2'
+
+# setup node telegraf
+telegraf/install.sh

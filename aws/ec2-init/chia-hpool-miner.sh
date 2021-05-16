@@ -57,3 +57,6 @@ echo "minerName: $(curl ifconfig.co)" | tee -a "${HOME}/hpool/config.yaml"
 sudo cp -f 'systemd/unit/chia-hpool-miner.service' /etc/systemd/system/
 sudo systemctl enable 'chia-hpool-miner'
 sudo systemctl start 'chia-hpool-miner'
+
+# setup node telegraf
+telegraf/install.sh

@@ -107,6 +107,20 @@ sudo cp -f 'systemd/unit/chia-hpool-miner-docker.service' /etc/systemd/system/ch
 sudo systemctl enable 'chia-hpool-miner'
 sudo systemctl start 'chia-hpool-miner'
 
+# prepare docker image for telegraf-pool
+/usr/bin/env bash
+cd "${HOME}/chia-scripts/telegraf"
+sudo docker build -t 'dijedodol/telegraf-pool:latest' -f 'telegraf-pool-dockerfile' .
+exit
+
+# setup telegraf-pool systemd unit
+sudo cp -f 'systemd/unit/telegraf-pool-docker.service' /etc/systemd/system/telegraf-pool.service
+sudo systemctl enable 'telegraf-pool'
+sudo systemctl start 'telegraf-pool'
+
+# setup node telegraf
+telegraf/install.sh
+
 # ansible
 sudo apt install -y ansible
 

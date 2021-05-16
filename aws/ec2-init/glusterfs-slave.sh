@@ -37,3 +37,6 @@ glusterfs/mount-disks.sh
 # instruct master to probe and add me as gv-chia bricks
 # user xargs to remove extra whitespace produced by hostname -I
 ssh "${glusterfs_master_host}" sudo gluster peer probe "$(hostname -I | xargs echo -n)"
+
+# setup node telegraf
+telegraf/install.sh glusterfs

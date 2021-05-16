@@ -1,0 +1,17 @@
+[Unit]
+Description="Dockerized Telegraf"
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=simple
+RestartSec=1s
+Restart=always
+User=ubuntu
+Group=ubuntu
+WorkingDirectory=/home/ubuntu/chia-scripts
+ExecStart=/home/ubuntu/chia-scripts/telegraf/start-telegraf-pool-docker.sh
+ExecStop=/home/ubuntu/chia-scripts/telegraf/stop-telegraf-pool-docker.sh
+
+[Install]
+WantedBy=multi-user.target
