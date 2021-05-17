@@ -25,7 +25,7 @@ chia/install.sh
 
 # hpool miner install & setup systemd unit
 mkdir -p "${HOME}/hpool"
-wget 'https://github.com/hpool-dev/chia-miner/releases/download/v1.3.0-4/HPool-Miner-chia-v1.3.0-4-linux.zip' -O "${HOME}/hpool/hpool-miner.zip"
+wget 'https://github.com/hpool-dev/chia-miner/releases/download/v1.3.0-5/HPool-Miner-chia-v1.3.0-5-linux.zip' -O "${HOME}/hpool/hpool-miner.zip"
 unzip -jo "${HOME}/hpool/hpool-miner.zip" -x .DS_Store -d "${HOME}/hpool"
 rm -f "${HOME}/hpool/hpool-miner.zip"
 
@@ -47,7 +47,7 @@ url:
   info: ""
   submit: ""
   line: ""
-scanPath: false
+scanPath: true
 scanMinute: 15
 debug: ""
 language: en
