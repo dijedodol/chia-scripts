@@ -32,6 +32,11 @@ sudo systemctl start glusterd
 sudo systemctl status glusterd
 glusterfs/mount-disks.sh
 
+(sudo crontab -u "${USER}" -l ; echo '* * * * * cd "${HOME}/chia-scripts"; glusterfs/sync-disks.sh') | sudo crontab -u "${USER}" -
+
+# setup node telegraf
+telegraf/install.sh glusterfs
+
 sudo hostnamectl set-hostname glusterfs-master
 
 # wait for brick disk(s) to be available
@@ -59,8 +64,3 @@ for gshare_dir in /gshare/*; do
     volume_created='true'
   fi
 done
-
-(sudo crontab -u "${USER}" -l ; echo '* * * * * cd "${HOME}/chia-scripts"; glusterfs/sync-disks.sh') | sudo crontab -u "${USER}" -
-
-# setup node telegraf
-telegraf/install.sh glusterfs
