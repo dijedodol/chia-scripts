@@ -53,6 +53,9 @@ fi
 # chia install & setup systemd unit
 chia/install.sh
 
+tee "${HOME}/chia_plotter_env.sh" > /dev/null <<EOF
+export number_of_threads=1
+EOF
 sudo cp -f 'systemd/unit/chia-plotter@.service' /etc/systemd/system/
 sudo systemctl enable 'chia-plotter@1'
 sudo systemctl start 'chia-plotter@1'
