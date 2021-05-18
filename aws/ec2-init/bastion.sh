@@ -91,7 +91,7 @@ url:
   submit: ""
   line: ""
 scanPath: true
-scanMinute: 60
+scanMinute: 5
 debug: ""
 language: en
 singleThreadLoad: false

@@ -48,7 +48,7 @@ url:
   submit: ""
   line: ""
 scanPath: true
-scanMinute: 15
+scanMinute: 5
 debug: ""
 language: en
 singleThreadLoad: false
