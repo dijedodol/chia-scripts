@@ -15,3 +15,5 @@ sh install.sh
 
 . ./activate
 chia init
+
+echo '. "${HOME}/chia-blockchain/activate"' | tee -a "${HOME}/.bashrc"
