@@ -20,6 +20,7 @@ if [ -z "${suffix}" ]; then
 fi
 plots_tmp_dir="${HOME}/plots-tmp/${suffix}"
 mkdir -p "${plots_tmp_dir}"
+rm -rf "${plots_tmp_dir}/"*
 
 # loop whenever done plotting, unless we were told to stop
 . "${HOME}/chia-blockchain/activate"
