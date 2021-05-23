@@ -34,20 +34,21 @@ mkdir -p "${HOME}/gv-chia/plots"
 
 # format & mount the local nvme ssd from i3 aws ec instance
 mkdir -p "${HOME}/plots-tmp"
-sudo mkfs -t ext4 /dev/nvme0n1
-sudo mount /dev/nvme0n1 "${HOME}/plots-tmp"
+dev_name='nvme0n1'
+sudo mkfs -t ext4 "/dev/${dev_name}"
+sudo mount "/dev/${dev_name}" "${HOME}/plots-tmp"
 sudo chown -R "${USER}:" "${HOME}/plots-tmp"
 
 fstab_count="$(grep -cF "/dev/${dev_name}" /etc/fstab)"
 if [ "${fstab_count}" -gt 0 ]; then
   # update fstab, remove the same previous entry if exists
   temp_file="$(mktemp)"
-  grep -vF "/dev/nvme0n1" /etc/fstab | tee "${temp_file}"
-  echo "/dev/nvme0n1 ${HOME}/plots-tmp ext4 defaults,nofail 0" | tee -a "${temp_file}" > /dev/null
+  grep -vF "/dev/${dev_name}" /etc/fstab | tee "${temp_file}"
+  echo "/dev/${dev_name} ${HOME}/plots-tmp ext4 defaults,nofail 0" | tee -a "${temp_file}" > /dev/null
   sudo tee /etc/fstab < "${temp_file}" > /dev/null
   rm -f "${temp_file}"
 else
-  echo "/dev/nvme0n1 ${HOME}/plots-tmp ext4 defaults,nofail 0" | sudo tee -a /etc/fstab > /dev/null
+  echo "/dev/${dev_name} ${HOME}/plots-tmp ext4 defaults,nofail 0" | sudo tee -a /etc/fstab > /dev/null
 fi
 
 # chia install & setup systemd unit
