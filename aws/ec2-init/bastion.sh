@@ -16,7 +16,7 @@ cd "${HOME}/chia-scripts"
 . constants.sh
 
 # prepare hostname & ssh
-sudo hostnamectl set-hostname "$(cat "${HOME}/aws_region")"
+sudo hostnamectl set-hostname "bastion-$(cat "${HOME}/aws_region")"
 tee -a "${HOME}/.ssh/config" > /dev/null <<EOF
 Host *
     StrictHostKeyChecking no
