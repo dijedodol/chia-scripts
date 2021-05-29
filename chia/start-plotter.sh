@@ -33,7 +33,7 @@ touch "${worker_plots_tmp_dir}.loop"
   last_start_timestamp=$(cat "${plots_tmp_dir}/last_start_timestamp")
   current_timestamp=$(date +%s)
   elapsed_seconds=$(("${current_timestamp}" - "${last_start_timestamp}"))
-  delay_seconds='900'
+  delay_seconds='450'
   echo "elapsed_seconds: ${elapsed_seconds}"
   if [ "${elapsed_seconds}" -lt "${delay_seconds}" ]; then
     await_seconds="$(("${delay_seconds}"-"${elapsed_seconds}"))"
