@@ -21,21 +21,39 @@ glusterfs/client-setup.sh
 mkdir -p "${HOME}/gv-chia/plots"
 
 # format & mount the local nvme ssd from i3 aws ec instance
+# prepare raid0 if necessary
+disks_temp_file="$(mktemp)"
+lsblk --json | jq -c '.blockdevices[] | select(.mountpoint == null and .type == "disk" and .children == null) | .name' | jq -r | while read -r dev_name; do
+  echo "/dev/${dev_name}" | tee -a "${disks_temp_file}" > /dev/null
+done
+disks_size="$(wc -l < "${disks_temp_file}")"
+if [ "${disks_size}" -gt 1 ]; then
+  # create raid0 with name md0 and use that as our plots-tmp storage
+  plots_tmp_dev_name='md0'
+  sort < "${disks_temp_file}" | xargs -n "${disks_size}" sudo mdadm --create --verbose /dev/"${plots_tmp_dev_name}" --level raid0 --raid-devices="${disks_size}"
+else
+  # no need to raid0 since there is only 1 disk, use it directly for plots-tmp storage
+  plots_tmp_dev_name="$(sort < "${disks_temp_file}" | head -n 1)"
+fi
+rm -f "${disks_temp_file}"
+
+# mount the local nvme ssd, either from raid0 or directly from the device
 mkdir -p "${HOME}/plots-tmp"
-sudo mkfs -t ext4 /dev/nvme0n1
-sudo mount /dev/nvme0n1 "${HOME}/plots-tmp"
+sudo mkfs -t ext4 /dev/"${plots_tmp_dev_name}"
+sudo mount /dev/"${plots_tmp_dev_name}" "${HOME}/plots-tmp"
 sudo chown -R "${USER}:" "${HOME}/plots-tmp"
 
+# register in fstab entry
 fstab_count="$(grep -cF "/dev/${dev_name}" /etc/fstab)"
 if [ "${fstab_count}" -gt 0 ]; then
   # update fstab, remove the same previous entry if exists
   temp_file="$(mktemp)"
-  grep -vF "/dev/nvme0n1" /etc/fstab | tee "${temp_file}"
-  echo "/dev/nvme0n1 ${HOME}/plots-tmp ext4 defaults,nofail 0" | tee -a "${temp_file}" > /dev/null
+  grep -vF "/dev/${plots_tmp_dev_name}" /etc/fstab | tee "${temp_file}"
+  echo "/dev/${plots_tmp_dev_name} ${HOME}/plots-tmp ext4 defaults,nofail 0" | tee -a "${temp_file}" > /dev/null
   sudo tee /etc/fstab < "${temp_file}" > /dev/null
   rm -f "${temp_file}"
 else
-  echo "/dev/nvme0n1 ${HOME}/plots-tmp ext4 defaults,nofail 0" | sudo tee -a /etc/fstab > /dev/null
+  echo "/dev/${plots_tmp_dev_name} ${HOME}/plots-tmp ext4 defaults,nofail 0" | sudo tee -a /etc/fstab > /dev/null
 fi
 
 # chia install & setup systemd unit
