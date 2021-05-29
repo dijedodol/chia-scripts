@@ -41,11 +41,21 @@ fi
 # chia install & setup systemd unit
 chia/install.sh
 
-sudo cp -f 'systemd/unit/chia-plotter@.service' /etc/systemd/system/
-sudo systemctl enable 'chia-plotter@1'
-sudo systemctl enable 'chia-plotter@2'
-sudo systemctl start 'chia-plotter@1'
-sudo systemctl start 'chia-plotter@2'
-
 # setup node telegraf
 telegraf/install.sh
+
+if [ -n "${chia_plotter_size}" ] && [ "${chia_plotter_size}" -eq "${chia_plotter_size}" ]; then
+  echo "using chia_plotter_size: ${chia_plotter_size}"
+else
+  chia_plotter_size='2'
+fi
+echo "${chia_plotter_size}" | tee "${HOME}/chia_plotter_size"
+
+sudo cp -f 'systemd/unit/chia-plotter@.service' /etc/systemd/system/
+x=${chia_plotter_size}
+while [ "$x" -gt 0 ];
+do
+  sudo systemctl enable "chia-plotter@${x}"
+  sudo systemctl start "chia-plotter@${x}"
+  x=$(("$x"-1))
+done
