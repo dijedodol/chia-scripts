@@ -68,7 +68,7 @@ if [ -n "${chia_plotter_size}" ] && [ "${chia_plotter_size}" -eq "${chia_plotter
 else
   chia_plotter_size='2'
 fi
-echo "${chia_plotter_size}" | tee "${HOME}/chia_plotter_size"
+echo "${chia_plotter_size}" | tee "${HOME}/chia_plotter_size" > /dev/null
 
 sudo cp -f 'systemd/unit/chia-plotter@.service' /etc/systemd/system/
 x=${chia_plotter_size}
