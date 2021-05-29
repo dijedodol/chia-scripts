@@ -18,7 +18,7 @@ cd "${HOME}/chia-scripts"
 mkdir -p "${HOME}/gv-chia/plots"
 mkdir -p "${HOME}/.chia"
 dev_name='nvme1n1'
-sudo mkfs -t ext4 "/dev/${dev_name}"
+sudo mkfs -F -t ext4 "/dev/${dev_name}"
 sudo mount "/dev/${dev_name}" "${HOME}/.chia"
 sudo chown -R "${USER}:" "${HOME}/.chia"
 

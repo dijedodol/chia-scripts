@@ -34,7 +34,7 @@ lsblk --json | jq -c '.blockdevices[] | select(.mountpoint == null and .type == 
     mount_and_update_fstab "${dev_name}" "/gshare/${dev_name}"
   elif [ -z "$fs" ]; then
     echo "formatting block_device because there is no filesystem detected on block_device: ${dev_name}"
-    sudo mkfs -t "${expected_fs}" "/dev/${dev_name}"
+    sudo mkfs -F -t "${expected_fs}" "/dev/${dev_name}"
     mount_and_update_fstab "${dev_name}" "/gshare/${dev_name}"
   else
     echo "skipping block_device: ${dev_name}, unexpected existing filesystem: ${fs}"

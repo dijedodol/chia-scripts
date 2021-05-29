@@ -35,7 +35,7 @@ mkdir -p "${HOME}/gv-chia/plots"
 # format & mount the local nvme ssd from i3 aws ec instance
 mkdir -p "${HOME}/plots-tmp"
 dev_name='nvme0n1'
-sudo mkfs -t ext4 "/dev/${dev_name}"
+sudo mkfs -F -t ext4 "/dev/${dev_name}"
 sudo mount "/dev/${dev_name}" "${HOME}/plots-tmp"
 sudo chown -R "${USER}:" "${HOME}/plots-tmp"
 
