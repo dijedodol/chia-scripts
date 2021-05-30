@@ -39,7 +39,6 @@ rm -f "${disks_temp_file}"
 
 # mount the local nvme ssd, either from raid0 or directly from the device
 mkdir -p "${HOME}/plots-tmp"
-sudo parted "${plots_tmp_dev_name}" mktable gpt
 sudo mkfs -F -t ext4 "${plots_tmp_dev_name}"
 sudo mount "${plots_tmp_dev_name}" "${HOME}/plots-tmp"
 sudo chown -R "${USER}:" "${HOME}/plots-tmp"
