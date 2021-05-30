@@ -76,7 +76,11 @@ sudo usermod -aG docker "${USER}"
 
 # hpool miner install & setup systemd unit
 mkdir -p "${HOME}/hpool"
-wget 'https://github.com/hpool-dev/chia-miner/releases/download/v1.3.0-6/HPool-Miner-chia-v1.3.0-6-linux.zip' -O "${HOME}/hpool/hpool-miner.zip"
+if [ "$(uname -p)" = 'aarch64' ]; then
+  wget 'https://github.com/hpool-dev/chia-miner/releases/download/v1.4.0-2/HPool-Miner-chia-v1.4.0-2-aarch64.zip' -O "${HOME}/hpool/hpool-miner.zip"
+else
+  wget 'https://github.com/hpool-dev/chia-miner/releases/download/v1.4.0-2/HPool-Miner-chia-v1.4.0-2-linux.zip' -O "${HOME}/hpool/hpool-miner.zip"
+fi
 unzip -jo "${HOME}/hpool/hpool-miner.zip" -x .DS_Store -d "${HOME}/hpool"
 rm -f "${HOME}/hpool/hpool-miner.zip"
 
