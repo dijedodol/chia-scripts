@@ -27,11 +27,11 @@ if [ "${fstab_count}" -gt 0 ]; then
   # update fstab, remove the same previous entry if exists
   temp_file="$(mktemp)"
   grep -vF "/dev/${dev_name}" /etc/fstab | tee "${temp_file}"
-  echo "/dev/${dev_name} ${HOME}/plots-tmp ext4 defaults,nofail 0" | tee -a "${temp_file}" > /dev/null
+  echo "/dev/${dev_name} ${HOME}/.chia ext4 defaults,nofail 0" | tee -a "${temp_file}" > /dev/null
   sudo tee /etc/fstab < "${temp_file}" > /dev/null
   rm -f "${temp_file}"
 else
-  echo "/dev/${dev_name} ${HOME}/plots-tmp ext4 defaults,nofail 0" | sudo tee -a /etc/fstab > /dev/null
+  echo "/dev/${dev_name} ${HOME}/.chia ext4 defaults,nofail 0" | sudo tee -a /etc/fstab > /dev/null
 fi
 
 # chia install & setup systemd unit
