@@ -29,8 +29,8 @@ done
 disks_size="$(wc -l < "${disks_temp_file}")"
 if [ "${disks_size}" -gt 1 ]; then
   # create raid0 with name md0 and use that as our plots-tmp storage
-  plots_tmp_dev_name='md0'
-  sort < "${disks_temp_file}" | xargs -n "${disks_size}" sudo mdadm --create --verbose /dev/"${plots_tmp_dev_name}" --level raid0 --raid-devices="${disks_size}"
+  plots_tmp_dev_name='/dev/md0'
+  sort < "${disks_temp_file}" | xargs -n "${disks_size}" sudo mdadm --create --verbose "${plots_tmp_dev_name}" --level raid0 --raid-devices="${disks_size}"
 else
   # no need to raid0 since there is only 1 disk, use it directly for plots-tmp storage
   plots_tmp_dev_name="$(sort < "${disks_temp_file}" | head -n 1)"
@@ -39,22 +39,22 @@ rm -f "${disks_temp_file}"
 
 # mount the local nvme ssd, either from raid0 or directly from the device
 mkdir -p "${HOME}/plots-tmp"
-sudo parted /dev/"${plots_tmp_dev_name}" mktable gpt
-sudo mkfs -F -t ext4 /dev/"${plots_tmp_dev_name}"
-sudo mount /dev/"${plots_tmp_dev_name}" "${HOME}/plots-tmp"
+sudo parted "${plots_tmp_dev_name}" mktable gpt
+sudo mkfs -F -t ext4 "${plots_tmp_dev_name}"
+sudo mount "${plots_tmp_dev_name}" "${HOME}/plots-tmp"
 sudo chown -R "${USER}:" "${HOME}/plots-tmp"
 
 # register in fstab entry
-fstab_count="$(grep -cF "/dev/${dev_name}" /etc/fstab)"
+fstab_count="$(grep -cF "${plots_tmp_dev_name}" /etc/fstab)"
 if [ "${fstab_count}" -gt 0 ]; then
   # update fstab, remove the same previous entry if exists
   temp_file="$(mktemp)"
-  grep -vF "/dev/${plots_tmp_dev_name}" /etc/fstab | tee "${temp_file}"
-  echo "/dev/${plots_tmp_dev_name} ${HOME}/plots-tmp ext4 defaults,nofail 0" | tee -a "${temp_file}" > /dev/null
+  grep -vF "${plots_tmp_dev_name}" /etc/fstab | tee "${temp_file}"
+  echo "${plots_tmp_dev_name} ${HOME}/plots-tmp ext4 defaults,nofail 0" | tee -a "${temp_file}" > /dev/null
   sudo tee /etc/fstab < "${temp_file}" > /dev/null
   rm -f "${temp_file}"
 else
-  echo "/dev/${plots_tmp_dev_name} ${HOME}/plots-tmp ext4 defaults,nofail 0" | sudo tee -a /etc/fstab > /dev/null
+  echo "${plots_tmp_dev_name} ${HOME}/plots-tmp ext4 defaults,nofail 0" | sudo tee -a /etc/fstab > /dev/null
 fi
 
 # chia install & setup systemd unit
