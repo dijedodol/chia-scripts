@@ -32,35 +32,38 @@ glusterfs/install.sh
 glusterfs/client-setup.sh
 mkdir -p "${HOME}/gv-chia/plots"
 
-# format & mount the local nvme ssd from i3 aws ec instance
-mkdir -p "${HOME}/plots-tmp"
-dev_name='nvme0n1'
-sudo mkfs -F -t ext4 "/dev/${dev_name}"
-sudo mount "/dev/${dev_name}" "${HOME}/plots-tmp"
-sudo chown -R "${USER}:" "${HOME}/plots-tmp"
+if [ "${chia_plotter_enable}" = 'y' ] || [ "${chia_plotter_enable}" = 'Y' ]; then
+  # format & mount the local nvme ssd from i3 aws ec instance
+  mkdir -p "${HOME}/plots-tmp"
+  dev_name='nvme0n1'
+  sudo mkfs -F -t ext4 "/dev/${dev_name}"
+  sudo mount "/dev/${dev_name}" "${HOME}/plots-tmp"
+  sudo chown -R "${USER}:" "${HOME}/plots-tmp"
 
-fstab_count="$(grep -cF "/dev/${dev_name}" /etc/fstab)"
-if [ "${fstab_count}" -gt 0 ]; then
-  # update fstab, remove the same previous entry if exists
-  temp_file="$(mktemp)"
-  grep -vF "/dev/${dev_name}" /etc/fstab | tee "${temp_file}"
-  echo "/dev/${dev_name} ${HOME}/plots-tmp ext4 defaults,nofail 0" | tee -a "${temp_file}" > /dev/null
-  sudo tee /etc/fstab < "${temp_file}" > /dev/null
-  rm -f "${temp_file}"
-else
-  echo "/dev/${dev_name} ${HOME}/plots-tmp ext4 defaults,nofail 0" | sudo tee -a /etc/fstab > /dev/null
-fi
+  fstab_count="$(grep -cF "/dev/${dev_name}" /etc/fstab)"
+  if [ "${fstab_count}" -gt 0 ]; then
+    # update fstab, remove the same previous entry if exists
+    temp_file="$(mktemp)"
+    grep -vF "/dev/${dev_name}" /etc/fstab | tee "${temp_file}"
+    echo "/dev/${dev_name} ${HOME}/plots-tmp ext4 defaults,nofail 0" | tee -a "${temp_file}" > /dev/null
+    sudo tee /etc/fstab < "${temp_file}" > /dev/null
+    rm -f "${temp_file}"
+  else
+    echo "/dev/${dev_name} ${HOME}/plots-tmp ext4 defaults,nofail 0" | sudo tee -a /etc/fstab > /dev/null
+  fi
 
-# chia install & setup systemd unit
-chia/install.sh
+  # chia install & setup systemd unit
+  chia/install.sh
 
-tee "${HOME}/chia_plotter_env.sh" > /dev/null <<EOF
+  tee "${HOME}/chia_plotter_env.sh" > /dev/null <<EOF
 #!/usr/bin/env bash
 export number_of_threads=1
 EOF
-sudo cp -f 'systemd/unit/chia-plotter@.service' /etc/systemd/system/
-sudo systemctl enable 'chia-plotter@1'
-sudo systemctl start 'chia-plotter@1'
+
+  sudo cp -f 'systemd/unit/chia-plotter@.service' /etc/systemd/system/
+  sudo systemctl enable 'chia-plotter@1'
+  sudo systemctl start 'chia-plotter@1'
+fi
 
 # install docker to run hpool miner in isolated env
 sudo apt install -y apt-transport-https ca-certificates curl software-properties-common
