@@ -63,6 +63,9 @@ EOF
   sudo cp -f 'systemd/unit/chia-plotter@.service' /etc/systemd/system/
   sudo systemctl enable 'chia-plotter@1'
   sudo systemctl start 'chia-plotter@1'
+else
+  # chia install & setup systemd unit
+  chia/install.sh
 fi
 
 # install docker to run hpool miner in isolated env
